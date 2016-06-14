@@ -18,6 +18,7 @@ class Bakuro_Gen():
 					row[index] = None
 				else:
 					row[index] = {'dec':val, 'bin':bin(val)}
+		
 
 	def solve_grid(self):
 		#Columns
@@ -38,10 +39,7 @@ class Bakuro_Gen():
 		for index, row in enumerate(self.grid):
 			row_total = 0
 			for ind, val in enumerate(row):
-				if val is None or 'col_total' in val:
-					row[ind] = {'row_total':row_total}
-					row_total = 0
-				elif 'row_total' in val:
+				if 'col_total' in val:
 					row[ind]['row_total'] = row_total
 					row_total = 0
 				elif ind == len(row) -1:
@@ -55,10 +53,6 @@ class Bakuro_Gen():
 
 
 	def print_grid(self, binary = False, solved = True):
-		for row in self.grid:
-			print(row)
-
-		print('----')
 		for row_index, row in enumerate(self.grid):
 			unsolved = ''
 			for col_index, value in enumerate(row):
@@ -83,6 +77,6 @@ args = parser.parse_args()
 b = Bakuro_Gen(args.grid_size, args.bits)
 b.solve_grid()
 b.print_grid(binary = False, solved = True)
-
+b.print_grid(binary = False, solved = False)
 #TODO solve grids passed to program in txt file
 #TODO prettify grid printing and add zero padding
