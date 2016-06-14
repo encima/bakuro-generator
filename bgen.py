@@ -38,10 +38,10 @@ class Bakuro_Gen():
 		for index, row in enumerate(self.grid):
 			row_total = 0
 			for ind, val in enumerate(row):
-				if val is None:
+				if val is None or 'col_total' in val:
 					row[ind] = {'row_total':row_total}
 					row_total = 0
-				elif row_total in val:
+				elif 'row_total' in val:
 					row[ind]['row_total'] = row_total
 					row_total = 0
 				elif ind == len(row) -1:
@@ -54,17 +54,25 @@ class Bakuro_Gen():
 
 
 
-	def print_grid(self, binary = False):
-		if not binary:
-			for row in self.grid:
-				print(row)
-		else:
-			for row in self.grid:
-				for val in row:
-					if type(val) == int:
-						print(bin(val))
+	def print_grid(self, binary = False, solved = True):
+		for row in self.grid:
+			print(row)
+
+		print('----')
+		for row_index, row in enumerate(self.grid):
+			unsolved = ''
+			for col_index, value in enumerate(row):
+				val = self.grid[row_index][col_index]
+				if 'bin' in val:
+					if binary:
+						unsolved += str(val['bin']) + ' . '
 					else:
-						print(val)
+						unsolved += str(val['dec']) + ' . '
+				elif ('row_total' in self.grid[row_index][col_index] or 'col_total' in self.grid[row_index][col_index]) and solved:
+					unsolved += str((self.grid[row_index][col_index])) + ' . '
+				else:
+					unsolved += ('[  ] . ')
+			print(unsolved)
 
 
 parser = argparse.ArgumentParser(description='Generate a bakuro grid')
@@ -74,8 +82,7 @@ parser.add_argument('--sol', default=True, help='Print the solved grid', type=bo
 args = parser.parse_args()
 b = Bakuro_Gen(args.grid_size, args.bits)
 b.solve_grid()
-b.print_grid(binary = False)
+b.print_grid(binary = False, solved = True)
 
-#TODO print grid with no square filled in
 #TODO solve grids passed to program in txt file
 #TODO prettify grid printing and add zero padding
