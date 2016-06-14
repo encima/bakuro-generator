@@ -55,15 +55,17 @@ class Bakuro_Gen():
 			unsolved = ''
 			for col_index, value in enumerate(row):
 				val = grid[row_index][col_index]
-				if 'bin' in val:
+				if 'bin' in val and solved:
 					if binary:
 						unsolved += str(val['bin']) + ' . '
 					else:
 						unsolved += str(val['dec']) + ' . '
-				elif ('row_total' in val or 'col_total' in val) and solved:
+				elif 'bin' in val:
+					unsolved += '[ ] .'
+				elif ('row_total' in val or 'col_total' in val):
 					unsolved += str(val) + ' . '
-				else:
-					unsolved += ('[  ] . ')
+				#else:
+				#	unsolved += ('[  ] . ')
 			print(unsolved)
 
 
