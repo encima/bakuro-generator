@@ -57,13 +57,13 @@ class Bakuro_Gen():
 				val = grid[row_index][col_index]
 				if 'bin' in val and solved:
 					if binary:
-						unsolved += str(val['bin']) + ' . '
+						unsolved += str(val['bin']) + (25*' ')
 					else:
-						unsolved += str(val['dec']) + ' . '
+						unsolved += str(val['dec']) + (25*' ')
 				elif 'bin' in val:
-					unsolved += '[ ] .'
+					unsolved += '[ ]' + (25*' ')
 				elif ('row_total' in val or 'col_total' in val):
-					unsolved += str(val) + ' . '
+					unsolved += str(val) + '            '
 				#else:
 				#	unsolved += ('[  ] . ')
 			print(unsolved)
