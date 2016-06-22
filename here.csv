@@ -1,0 +1,5 @@
+"{'dec': 5, 'bin': '0b101'}","{'dec': 11, 'bin': '0b1011'}","{'dec': 6, 'bin': '0b110'}","{'dec': 11, 'bin': '0b1011'}",{'row_total': 33}
+"{'dec': 9, 'bin': '0b1001'}","{'dec': 5, 'bin': '0b101'}","{'dec': 1, 'bin': '0b1'}","{'dec': 14, 'bin': '0b1110'}",{'row_total': 29}
+"{'dec': 11, 'bin': '0b1011'}","{'dec': 9, 'bin': '0b1001'}","{'dec': 10, 'bin': '0b1010'}","{'dec': 2, 'bin': '0b10'}",{'row_total': 32}
+"{'dec': 4, 'bin': '0b100'}","{'dec': 10, 'bin': '0b1010'}","{'row_total': 14, 'col_total': 17}","{'dec': 11, 'bin': '0b1011'}",{'row_total': 11}
+{'col_total': 29},{'col_total': 35},{'col_total': 38}

@@ -1,13 +1,15 @@
 import random
 import argparse
+import csv
+import png
+import ast
+import numpy as np
+from tabulate import tabulate
 
 class Bakuro_Gen():
 
-	def __init__(self, grid_size, bits):
-		self.grid_size = grid_size
-		self.bits = bits
-		#calculate the max number that can be represented by the bits
-		self.max_num = (2**self.bits)-1
+	def __init__(self):
+		pass
 	
 	def solve_grid(self, grid):
 		#Columns
@@ -40,7 +42,14 @@ class Bakuro_Gen():
 		grid.append(col_totals)
 		return grid
 
-	def generate_grid(self):
+	def generate_grid(self, grid_size=5, bits=4, max_num=None):
+		self.grid_size = grid_size
+		self.bits = bits
+		#calculate the max number that can be represented by the bits
+		if max_num is None:
+			self.max_num = (2**self.bits)-1
+		else:
+			self.max_num = max_num
 		grid = [[random.randrange(0, self.max_num) for _ in range(self.grid_size - 1)] for _ in range(self.grid_size - 1)]
 		for row in grid:
 			for index,val in enumerate(row):
@@ -49,6 +58,18 @@ class Bakuro_Gen():
 				else:
 					row[index] = {'dec':val, 'bin':bin(val)}
 		return self.solve_grid(grid)
+
+	def read_grid(self, filepath):
+		grid = []
+		with open(filepath, "r") as infile:
+			for line in csv.reader(infile):
+				row = []
+				for item in line:
+					#convert string item to dict
+					row.append(ast.literal_eval(item))
+				grid.append(row)
+			
+		return grid
 
 	def print_grid(self, grid, binary = False, solved = True):
 		for row_index, row in enumerate(grid):
@@ -68,16 +89,39 @@ class Bakuro_Gen():
 				#	unsolved += ('[  ] . ')
 			print(unsolved)
 
+	def save_grid(self, grid, filepath):
+		with open(filepath + '.csv', "w") as output:
+			writer = csv.writer(output, lineterminator='\n')
+			for x in grid:
+				writer.writerow(x)
+		x = np.array(grid)
+		print(tabulate(x, tablefmt="fancy_grid"))
+		#s = [[str(e) for e in row] for row in grid]
+		#lens = [max(map(len, col[0])) for col in zip(*s)]
+		#fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
+		#table = [fmt.format(*row) for row in s]
+		#print('\n'.join(table))
+		#print(x)
+		#png.Writer.write(filepath+'.png', np.reshape(x, (-1, self.grid_size*self.grid_size)))
+
 
 parser = argparse.ArgumentParser(description='Generate a bakuro grid')
 parser.add_argument('--grid_size', default=5, help='size of grid to generate', type=int)
 parser.add_argument('--bits', default=4, help='size of numbers to generate', type=int)
 parser.add_argument('--sol', default=True, help='Print the solved grid', type=bool)
+parser.add_argument('--max_num', default=None, help='Maximum number to generate up to, calculated from bits if none', type=int)
+parser.add_argument('--output', default=None, help='file path to save grid to', type=str)
+parser.add_argument('--infile', default=None, help='file path to read grid from', type=str)
 args = parser.parse_args()
-b = Bakuro_Gen(args.grid_size, args.bits)
-grid = b.generate_grid()
-b.print_grid(grid, binary = False, solved = False)
-print('---------')
-b.print_grid(grid, binary = False, solved = True)
-#TODO solve grids passed to program in txt file
+b = Bakuro_Gen()
+if args.infile:
+	grid = b.read_grid(args.infile)
+	b.print_grid(grid, binary = False, solved = False)
+else:
+	grid = b.generate_grid(args.grid_size, args.bits, args.max_num)
+	#b.print_grid(grid, binary = False, solved = False)
+	print('---------')
+	#b.print_grid(grid, binary = False, solved = True)
+	if args.output:
+		b.save_grid(grid, args.output)
 #TODO prettify grid printing and add zero padding
