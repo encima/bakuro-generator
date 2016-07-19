@@ -71,28 +71,34 @@ class Bakuro_Gen():
 
 		return grid
 
-	def print_grid(self, grid, binary = False, solved = True):
-		for row_index, row in enumerate(grid):
-			unsolved = ''
-			for col_index, value in enumerate(row):
-				val = grid[row_index][col_index]
-				if 'bin' in val and solved:
-					if binary:
-						unsolved += str(val['bin']) + (25*' ')
-					else:
-						unsolved += str(val['dec']) + (25*' ')
-				elif 'bin' in val:
-					unsolved += '[ ]' + (25*' ')
-				elif ('row_total' in val or 'col_total' in val):
-					unsolved += str(val)
+	def convert_grid(self, grid, binary = False, solved = True):
+		output = []
+		for row in grid:
+			output_row = []
+			for cell in row:
+				if 'col_total' in cell or 'row_total' in cell:
+					output_row.append("Col: {}| Row: {}".format(cell.get('col_total', ""), cell.get('row_total', "")))
 				else:
-					unsolved += ('[  ] . ')
-		x = np.array(grid)
-		print(tabulate(x, tablefmt="grid"))
+					if binary and solved:
+						output_row.append(cell.get('bin'))
+					elif not binary and solved:
+						output_row.append(cell.get('dec'))
+					elif not solved:
+						output_row.append("")
+					else:
+						output_row.append("")
+			output.append(output_row)
+		return output
 
-	def save_grid(self, grid, filepath):
+	def print_grid(self, grid):
+		for row in grid:
+			print(row)
+		print('****************')
+
+
+	def save_grid(self, grid, filepath, fmt="latex"):
 		x = np.array(grid)
-		t = tabulate(x, tablefmt="latex")
+		t = tabulate(x, tablefmt=fmt)
 		with open('{}.tex'.format(filepath), 'w') as outputfile:
 			outputfile.write(t)
 
@@ -104,15 +110,19 @@ parser.add_argument('--sol', default=True, help='Print the solved grid', type=bo
 parser.add_argument('--max_num', default=None, help='Maximum number to generate up to, calculated from bits if none', type=int)
 parser.add_argument('--outfile', default=None, help='file path to save grid to', type=str)
 parser.add_argument('--infile', default=None, help='file path to read grid from', type=str)
+parser.add_argument('--fmt', default=None, help='Output format', type=str)
 args = parser.parse_args()
 b = Bakuro_Gen()
 if args.infile:
 	grid = b.read_grid(args.infile)
-	b.print_grid(grid, binary = False, solved = False)
+	b.convert_grid(grid, binary = False, solved = False)
 else:
 	grid = b.generate_grid(args.grid_size, args.bits, args.max_num)
-	b.print_grid(grid, binary = False, solved = False)
+	# print(np.array(grid))
+	unsolved = b.convert_grid(grid, binary = False, solved = False)
+	b.print_grid(unsolved)
+	b.print_grid(np.array(unsolved))
 	print('---------')
-	#b.print_grid(grid, binary = False, solved = True)
+	solved = b.convert_grid(grid, binary = False, solved = True)
 if args.outfile:
-	b.save_grid(grid, args.outfile)
+	b.save_grid(grid, args.outfile, args.fmt)
