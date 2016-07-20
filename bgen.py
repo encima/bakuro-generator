@@ -29,6 +29,7 @@ class Bakuro_Gen():
 		#Rows
 		for index, row in enumerate(grid):
 			row_total = 0
+			print(row)
 			for ind, val in enumerate(row):
 				if 'col_total' in val:
 					row[ind]['row_total'] = row_total
@@ -40,6 +41,8 @@ class Bakuro_Gen():
 				else:
 					row_total += val['dec']
 		grid.append(col_totals)
+#Fills the bottomr right of the grid with an empty list, this is mainly to fix table formatting when printing
+		grid[self.grid_size-1] .append({})
 		return grid
 
 	def generate_grid(self, grid_size=5, bits=4, max_num=None):
@@ -118,11 +121,14 @@ if args.infile:
 	b.convert_grid(grid, binary = False, solved = False)
 else:
 	grid = b.generate_grid(args.grid_size, args.bits, args.max_num)
-	# print(np.array(grid))
 	unsolved = b.convert_grid(grid, binary = False, solved = False)
-	b.print_grid(unsolved)
-	b.print_grid(np.array(unsolved))
+	b.print_grid(grid)
+	#b.print_grid(unsolved)
+	#b.print_grid(np.array(unsolved))
+#TODO final column cut off
+	print(tabulate(unsolved, tablefmt="grid"))
 	print('---------')
-	solved = b.convert_grid(grid, binary = False, solved = True)
+	solved = b.convert_grid(grid, binary = True, solved = True)
+	print(tabulate(solved, tablefmt="grid"))
 if args.outfile:
 	b.save_grid(grid, args.outfile, args.fmt)
