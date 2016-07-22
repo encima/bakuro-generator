@@ -100,10 +100,19 @@ class Bakuro_Gen():
 
 
 	def save_grid(self, grid, filepath, fmt="latex"):
-		x = np.array(grid)
-		t = tabulate(x, tablefmt=fmt)
+		unsolved = self.convert_grid(grid,solved=False)
+		t = tabulate(unsolved, tablefmt=fmt)
 		with open('{}.tex'.format(filepath), 'w') as outputfile:
+			outputfile.write("""\\documentclass[]{article}
+			\\usepackage[margin=1in]{geometry}
+
+			\\begin{document}
+			\\section{Bakuro Exercise}""")
 			outputfile.write(t)
+			outputfile.write("\\newpage \n \\section{Bakuro Solution} \n")
+			outputfile.write(tabulate(self.convert_grid(grid,binary=True,solved=True), tablefmt=fmt, numalign="center"))
+			outputfile.write("\n \\end{document}")
+			
 
 
 parser = argparse.ArgumentParser(description='Generate a bakuro grid')
@@ -122,13 +131,10 @@ if args.infile:
 else:
 	grid = b.generate_grid(args.grid_size, args.bits, args.max_num)
 	unsolved = b.convert_grid(grid, binary = False, solved = False)
-	b.print_grid(grid)
 	#b.print_grid(unsolved)
 	#b.print_grid(np.array(unsolved))
-#TODO final column cut off
-	print(tabulate(unsolved, tablefmt="grid"))
 	print('---------')
 	solved = b.convert_grid(grid, binary = True, solved = True)
 	print(tabulate(solved, tablefmt="grid"))
 if args.outfile:
-	b.save_grid(grid, args.outfile, args.fmt)
+	b.save_grid(grid, args.outfile)
