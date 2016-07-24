@@ -29,7 +29,6 @@ class Bakuro_Gen():
 		#Rows
 		for index, row in enumerate(grid):
 			row_total = 0
-			print(row)
 			for ind, val in enumerate(row):
 				if 'col_total' in val:
 					row[ind]['row_total'] = row_total
@@ -94,13 +93,20 @@ class Bakuro_Gen():
 		return output
 
 	def print_grid(self, grid):
-		for row in grid:
-			print(row)
-		print('****************')
+		unsolved = b.convert_grid(grid, binary = False, solved = False)
+		solved = b.convert_grid(grid, binary = True, solved = True)
+		dec_solved = b.convert_grid(grid, binary = False, solved = True)
+		print(tabulate(unsolved, tablefmt="grid"))
+		print('---------')
+		print(tabulate(solved, tablefmt="grid"))
+		print('---------')
+		print(tabulate(dec_solved, tablefmt="grid"))
 
 
 	def save_grid(self, grid, filepath, fmt="latex"):
 		unsolved = self.convert_grid(grid,solved=False)
+		solved = self.convert_grid(grid, binary=True, solved=True)
+		dec_solved = self.convert_grid(grid, binary=False, solved=True)
 		t = tabulate(unsolved, tablefmt=fmt)
 		with open('{}.tex'.format(filepath), 'w') as outputfile:
 			outputfile.write("""\\documentclass[]{article}
@@ -110,7 +116,9 @@ class Bakuro_Gen():
 			\\section{Bakuro Exercise}""")
 			outputfile.write(t)
 			outputfile.write("\\newpage \n \\section{Bakuro Solution} \n")
-			outputfile.write(tabulate(self.convert_grid(grid,binary=True,solved=True), tablefmt=fmt, numalign="center"))
+			outputfile.write(tabulate(solved, tablefmt=fmt, numalign="center"))
+			outputfile.write("\\newpage \n \\section{Decimal Solution} \n")
+			outputfile.write(tabulate(dec_solved, tablefmt=fmt, numalign="center"))
 			outputfile.write("\n \\end{document}")
 			
 
@@ -130,11 +138,6 @@ if args.infile:
 	b.convert_grid(grid, binary = False, solved = False)
 else:
 	grid = b.generate_grid(args.grid_size, args.bits, args.max_num)
-	unsolved = b.convert_grid(grid, binary = False, solved = False)
-	#b.print_grid(unsolved)
-	#b.print_grid(np.array(unsolved))
-	print('---------')
-	solved = b.convert_grid(grid, binary = True, solved = True)
-	print(tabulate(solved, tablefmt="grid"))
+	b.print_grid(grid)
 if args.outfile:
 	b.save_grid(grid, args.outfile)
