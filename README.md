@@ -1,5 +1,15 @@
 # Bakuro Generator
 
+## Requirements
+
+* numpy
+* tabulate
+
+## Running
+
+* Ideally, create a virtualenv and run `pip install -r requirements.txt`
+* Run `bgen.py -h` to see the arguments you can provide
+
 ## About
 
 Python based generator of Bakuro puzzles, a binary version of the popular [kakuro](https://en.wikipedia.org/wiki/Kakuro) puzzle created by Computing At School, with support from Google. Details [here](https://teachinglondoncomputing.org/bakuro/). There are, however, some variations to the original concept.
@@ -8,7 +18,6 @@ Python based generator of Bakuro puzzles, a binary version of the popular [kakur
 
 * Solutions are not limited to 4-bit binary
 * Grid sizes are customisable
-* 
 
 ## Note
 
@@ -19,4 +28,5 @@ This software has been created with as few dependencies as possible, partly as a
 ## TODO
 
 [ ] Output tables in latex with gridlines
+
 [ ] Allow input and marking of solved grids
