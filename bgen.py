@@ -130,7 +130,7 @@ class Bakuro_Gen():
 
 
 parser = argparse.ArgumentParser(description='Generate a bakuro grid')
-parser.add_argument('--grid_size', default=5, help='size of grid to generate', type=int)
+parser.add_argument('--grid_size', default=6, help='size of grid to generate', type=int)
 parser.add_argument('--bits', default=4, help='size of numbers to generate', type=int)
 parser.add_argument('--sol', default=True, help='Print the solved grid', type=bool)
 parser.add_argument('--max_num', default=None, help='Maximum number to generate up to, calculated from bits if none', type=int)
