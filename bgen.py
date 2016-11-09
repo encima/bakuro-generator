@@ -114,7 +114,7 @@ class Bakuro_Gen():
         solved = self.convert_grid(grid, binary=True, solved=True)
         dec_solved = self.convert_grid(grid, binary=False, solved=True)
         t = tabulate(unsolved, tablefmt=fmt)
-        with open('{}.tex'.format(filepath), 'w') as outputfile:
+        with open('saved/{}.tex'.format(filepath), 'w') as outputfile:
             outputfile.write("""\\documentclass[]{article}
             \\usepackage[margin=1in]{geometry}
 
