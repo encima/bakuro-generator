@@ -54,27 +54,32 @@ class Bakuro_Gen():
         return tabulate(grid, tablefmt=fmt).replace(row_replace, row_replace_with).replace(col_replace, col_replace_with)
 
 
-    def save_grid(self, grid, filepath, fmt="latex"):
-        solved = grid 
-        unsolved = self.print_bin_grid(grid)
-        t = tabulate(unsolved, tablefmt=fmt)
+    def save_grid(self, grids, filepath, fmt="latex"):
         with open('output/{}.tex'.format(filepath), 'w') as outputfile:
             outputfile.write("""\\documentclass[]{article}
             \\usepackage[margin=1in]{geometry}
 
-            \\begin{document}
-            \\section{Bakuro Exercise}""")
-            outputfile.write(self.get_table(unsolved, fmt))
-            outputfile.write("\\newpage \n \\section{Bakuro Solution} \n")
-            outputfile.write(self.get_table(solved, fmt))
+            \\begin{document}""")
+            for g in grids:
+                outputfile.write("""\\section{Bakuro Exercise}""")
+                solved = g
+                unsolved = self.print_bin_grid(g)
+                outputfile.write(self.get_table(unsolved, fmt))
+                outputfile.write("\\newpage \n \\subsection{Bakuro Solution} \n")
+                outputfile.write(self.get_table(solved, fmt))
+                outputfile.write("\\newpage")
             outputfile.write("\n \\end{document}")
 
 parser = argparse.ArgumentParser(description='Generate a bakuro grid')
 parser.add_argument('--bits', default=4, help='size of numbers to generate', type=int)
+parser.add_argument('--grids', default=1, help='number of grids to generate', type=int)
 parser.add_argument('--outfile', default=None, help='file path to save grid to', type=str)
 args = parser.parse_args()
+grids = []
 b = Bakuro_Gen(args.bits)
-grid = b.generate_bin_grid()
-print_grid = b.print_bin_grid(grid)
+print("Generating {} grids".format(args.grids))
+for i in range(0, args.grids):
+    grids.append(b.generate_bin_grid())
+    #print_grid = b.print_bin_grid(grid)
 if args.outfile:
-    b.save_grid(grid, args.outfile)
+    b.save_grid(grids, args.outfile)
